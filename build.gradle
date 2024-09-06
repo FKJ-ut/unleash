@@ -1,42 +1,89 @@
-
 plugins {
     id 'base'
+    id 'com.github.node-gradle.node' version '3.4.0'  // Ensure you have the Node plugin applied
 }
+
+
+node {
+    version = '18.17.1'  // Match this with your project's Node.js version
+    npmVersion = '8.15.0'
+    download = true
+}
+
+
+task installDependencies(type: NpmTask) {
+    description = 'Install Node.js dependencies'
+    group = 'build'
+    args = ['install']
+}
+
+
+task buildTypeScript(type: NpmTask) {
+    description = 'Build TypeScript files'
+    group = 'build'
+    args = ['run', 'build:backend']
+}
+
+
+task testTypeScript(type: NpmTask) {
+    description = 'Run TypeScript tests'
+    group = 'verification'
+    args = ['run', 'test']
+}
+
+
+task cleanArtifacts(type: NpmTask) {
+    description = 'Clean TypeScript build artifacts'
+    group = 'build'
+    args = ['run', 'clean']
+}
+
 
 task runDocker(type: Exec) {
     description = 'Run Docker File'
     commandLine 'docker', 'compose', 'up', '-d'
 }
 
+
+
+
 task runYarnInstall(type: Exec) {
     // Path to the Yarn executable in the project
     def yarnPath = './.yarn/releases/yarn-4.3.1.cjs'
 
+
     // Command to run Yarn install
     commandLine 'node', yarnPath, 'install'
 
+
     // Set the working directory to where your package.json is located
     workingDir '.'
+
 
     // Print command output for debugging
     standardOutput = System.out
     errorOutput = System.err
 }
+
 
 task runYarnInstallFrontEnd(type: Exec) {
     // Path to the Yarn executable in the project
     def yarnPath = './.yarn/releases/yarn-4.3.1.cjs'
 
+
     // Command to run Yarn install
     commandLine 'node', yarnPath, 'install'
 
+
     // Set the working directory to where your package.json is located
     workingDir './frontend'
+
 
     // Print command output for debugging
     standardOutput = System.out
     errorOutput = System.err
 }
+
 
 task runDatabase(type: Exec) {
     description = 'Create a new database for the project'
@@ -56,32 +103,62 @@ task executeDatabase(type: Exec){
     commandLine 'docker', 'start', 'postgres'
 }
 
+
 task runBuild(type: Exec) {
     // Path to the Yarn executable in the project
     def yarnPath = './.yarn/releases/yarn-4.3.1.cjs'
 
+
     // Command to run Yarn install
     commandLine 'node', yarnPath, 'build'
 
+
     // Set the working directory to where your package.json is located
     workingDir '.'
+
 
     // Print command output for debugging
     standardOutput = System.out
     errorOutput = System.err
 }
 
+
 task runUnleash(type: Exec) {
     // Path to the Yarn executable in the project
     def yarnPath = './.yarn/releases/yarn-4.3.1.cjs'
 
+
     // Command to run Yarn install
     commandLine 'node', yarnPath, 'dev'
+
 
     // Set the working directory to where your package.json is located
     workingDir '.'
 
+
     // Print command output for debugging
     standardOutput = System.out
     errorOutput = System.err
+}
+
+
+task CommitAndPush {
+    group = 'Version Control'
+    description = 'Adds all changes, commits with a message, and pushes to the remote repository'
+
+
+    def commitMessage = 'Automated commit from Gradle'
+
+
+    doLast {
+        exec {
+            commandLine 'git', 'add', '.'
+        }
+        exec {
+            commandLine 'git', 'commit', '-m', commitMessage
+        }
+        exec {
+            commandLine 'git', 'push'
+        }
+    }
 }
