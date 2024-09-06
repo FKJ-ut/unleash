@@ -1,6 +1,10 @@
 pipeline { 
     agent any
 
+    environment {
+        YARN_BIN = "${WORKSPACE}/.yarn/releases/yarn-4.3.1.cjs"
+    }
+
     stages { 
         stage('Checkout') { 
             steps { 
@@ -22,12 +26,12 @@ stage('Verify Java Version') {
 
         stage('Install Yarn') { 
             steps { 
-                bat 'yarn install' 
+                bat '${env.YARN_BIN} install' 
             } 
         } 
         stage('Install Yarn Frontend') { 
             steps { 
-                bat 'gradle runYarnInstallFrontend' 
+                bat 'cd frontend && ${env.YARN_BIN} install' 
             } 
         } 
         stage('Database Setup') { 
