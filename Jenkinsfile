@@ -1,6 +1,12 @@
 pipeline { 
     agent any
 
+        environment {
+        // Path to JDK 17 installation
+        JAVA_HOME = tool name: 'jdk17', type: 'jdk'
+        PATH = "${JAVA_HOME}/bin:${env.PATH}"
+    }
+
     stages { 
         stage('Checkout') { 
             steps { 

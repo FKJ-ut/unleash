@@ -141,24 +141,30 @@ task runUnleash(type: Exec) {
     errorOutput = System.err
 }
 
-
 task CommitAndPush {
     group = 'Version Control'
     description = 'Adds all changes, commits with a message, and pushes to the remote repository'
 
-
     def commitMessage = 'Automated commit from Gradle'
-
 
     doLast {
         exec {
             commandLine 'git', 'add', '.'
+            standardOutput = new ByteArrayOutputStream()
+            errorOutput = new ByteArrayOutputStream()
+            ignoreExitValue = true
         }
         exec {
             commandLine 'git', 'commit', '-m', commitMessage
+            standardOutput = new ByteArrayOutputStream()
+            errorOutput = new ByteArrayOutputStream()
+            ignoreExitValue = true
         }
         exec {
             commandLine 'git', 'push'
+            standardOutput = new ByteArrayOutputStream()
+            errorOutput = new ByteArrayOutputStream()
+            ignoreExitValue = true
         }
     }
 }
