@@ -1,14 +1,10 @@
 pipeline { 
     agent any
-    environment {
-        JAVA_HOME = 'C:\\Program Files\\Java\\jdk-21'
-        PATH = "${JAVA_HOME}\\bin;${env.PATH}"
-    }
 
     stages { 
         stage('Checkout') { 
             steps { 
-                git branch: 'main', url: 'https://github.com/Chua123Yun/unleash' 
+                git branch: 'main', url: 'https://github.com/FKJ-ut/unleash' 
             } 
         }
         stage('Verify Gradle Version') {
