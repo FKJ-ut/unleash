@@ -22,7 +22,7 @@ stage('Verify Java Version') {
 
         stage('Install Yarn') { 
             steps { 
-                bat 'gradle runYarnInstall' 
+                bat 'yarn install' 
             } 
         } 
         stage('Install Yarn Frontend') { 
