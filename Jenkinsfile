@@ -22,32 +22,32 @@ stage('Verify Java Version') {
 
         stage('Install Yarn') { 
             steps { 
-                powershell 'gradle runYarnInstall' 
+                bat 'gradle runYarnInstall' 
             } 
         } 
         stage('Install Yarn Frontend') { 
             steps { 
-                powershell 'gradle runYarnInstallFrontend' 
+                bat 'gradle runYarnInstallFrontend' 
             } 
         } 
         stage('Database Setup') { 
             steps { 
-                powershell 'gradle runDatabase' 
+                bat 'gradle runDatabase' 
             } 
         } 
         stage('Execute Database') { 
             steps { 
-                powershell 'gradle executeDatabase' 
+                bat 'gradle executeDatabase' 
             } 
         } 
         stage('Build') { 
             steps { 
-                powershell 'gradle runBuild' 
+                bat 'gradle runBuild' 
             } 
         } 
         stage('Deploy Unleash') { 
             steps { 
-                powershell 'gradle runUnleash' 
+                bat 'gradle runUnleash' 
             } 
         } 
     } 
