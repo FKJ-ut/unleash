@@ -12,26 +12,23 @@ pipeline {
             } 
         }
         stage('Verify Gradle Version') {
-    steps {
-        powershell 'gradle -v'
-    }
-}
-
-stage('Verify Java Version') {
-    steps {
-        powershell 'java -version'
-    }
-}
-
-
+            steps {
+                powershell 'gradle -v'
+            }
+        }
+        stage('Verify Java Version') {
+            steps {
+                powershell 'java -version'
+            }
+        }
         stage('Install Yarn') { 
             steps { 
-                bat 'yarn install' 
+                bat "${env.YARN_BIN} install" 
             } 
         } 
         stage('Install Yarn Frontend') { 
             steps { 
-                bat 'cd frontend && ${env.YARN_BIN} install' 
+                bat "cd frontend && ${env.YARN_BIN} install"
             } 
         } 
         stage('Database Setup') { 
