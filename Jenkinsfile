@@ -26,7 +26,7 @@ stage('Verify Java Version') {
 
         stage('Install Yarn') { 
             steps { 
-                bat '${env.YARN_BIN} install' 
+                bat 'yarn install' 
             } 
         } 
         stage('Install Yarn Frontend') { 
