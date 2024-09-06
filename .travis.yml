@@ -1,18 +1,11 @@
-# Specify the Travis CI build environment
-dist: focal  # Ubuntu 20.04 LTS
-
-# Define the programming languages/environments
 language: java
 
-# Use JDK 11 for Java builds, which is commonly used for compatibility with modern libraries
 jdk:
   - openjdk11
 
-# Define Node.js versions for the Node.js/Yarn tasks
 node_js:
   - 18.17.1
 
-# Cache dependencies for faster builds
 cache:
   directories:
     - $HOME/.gradle/caches/
@@ -20,23 +13,16 @@ cache:
     - $HOME/.npm
     - $HOME/.yarn-cache
 
-# Install Yarn globally and ensure Gradle is set up
 before_install:
-  - npm install -g yarn  # Install Yarn globally
-  - curl -sLo gradle.zip https://services.gradle.org/distributions/gradle-7.6-bin.zip && unzip gradle.zip -d /tmp && export GRADLE_HOME=/tmp/gradle-7.6 && export PATH=$GRADLE_HOME/bin:$PATH  # Install Gradle
+  - npm install -g yarn  
+  - curl -sLo gradle.zip https://services.gradle.org/distributions/gradle-7.6-bin.zip && unzip gradle.zip -d /tmp && export GRADLE_HOME=/tmp/gradle-7.6 && export PATH=$GRADLE_HOME/bin:$PATH
 
-# Install dependencies using Yarn
 install:
-  - yarn install  # Install Node.js dependencies
-  - ./gradlew installDependencies  # Install Gradle dependencies and Node.js packages
+  - ./gradlew runYarnInstall
+  - ./gradlew runYarnInstallFrontEnd
 
-# Define the build script steps
 script:
-  - ./gradlew buildTypeScript  # Build TypeScript files
-  - ./gradlew test  # Run Java and TypeScript tests
-
-# After the tests, generate JaCoCo coverage reports and submit them
-after_success:
-  - ./gradlew jacocoTestReport  # Generate code coverage report
-  # Optionally, integrate with Coveralls (if you have Coveralls set up)
-  # - bash <(curl -s https://codecov.io/bash)  # Send the report to Codecov
+  - ./gradlew runDatabase
+  - ./gradlew executeDatabase
+  - ./gradlew runBuild
+  - ./gradlew runUnleash

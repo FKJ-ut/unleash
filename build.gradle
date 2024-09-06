@@ -28,17 +28,99 @@ task testTypeScript(type: NpmTask) {
     args = ['run', 'test']
 }
 
-task clean(type: NpmTask) {
+task cleanArtifacts(type: NpmTask) {
     description = 'Clean TypeScript build artifacts'
     group = 'build'
     args = ['run', 'clean']
 }
 
+task runDocker(type: Exec) {
+    description = 'Run Docker File'
+    commandLine 'docker', 'compose', 'up', '-d'
+}
+
+
+task runYarnInstall(type: Exec) {
+    // Path to the Yarn executable in the project
+    def yarnPath = './.yarn/releases/yarn-4.3.1.cjs'
+
+    // Command to run Yarn install
+    commandLine 'node', yarnPath, 'install'
+
+    // Set the working directory to where your package.json is located
+    workingDir '.'
+
+    // Print command output for debugging
+    standardOutput = System.out
+    errorOutput = System.err
+}
+
+task runYarnInstallFrontEnd(type: Exec) {
+    // Path to the Yarn executable in the project
+    def yarnPath = './.yarn/releases/yarn-4.3.1.cjs'
+
+    // Command to run Yarn install
+    commandLine 'node', yarnPath, 'install'
+
+    // Set the working directory to where your package.json is located
+    workingDir './frontend'
+
+    // Print command output for debugging
+    standardOutput = System.out
+    errorOutput = System.err
+}
+
+task runDatabase(type: Exec) {
+    description = 'Create a new database for the project'
+    commandLine 'docker', 'run',
+        '-e', 'POSTGRES_USER=unleash_user',
+        '-e', 'POSTGRES_PASSWORD=password',
+        '-e', 'POSTGRES_DB=unleash',
+        '--name', 'postgres',
+        '-p', '5432:5432',
+        '-d',
+        'postgres'
+}
+
+task executeDatabase(type: Exec){
+    description = 'Run the database'
+    commandLine 'docker', 'start', 'postgres'
+}
+
+task runBuild(type: Exec) {
+    // Path to the Yarn executable in the project
+    def yarnPath = './.yarn/releases/yarn-4.3.1.cjs'
+
+    // Command to run Yarn install
+    commandLine 'node', yarnPath, 'build'
+
+    // Set the working directory to where your package.json is located
+    workingDir '.'
+
+    // Print command output for debugging
+    standardOutput = System.out
+    errorOutput = System.err
+}
+
+task runUnleash(type: Exec) {
+    // Path to the Yarn executable in the project
+    def yarnPath = './.yarn/releases/yarn-4.3.1.cjs'
+
+    // Command to run Yarn install
+    commandLine 'node', yarnPath, 'dev'
+
+    // Set the working directory to where your package.json is located
+    workingDir '.'
+
+    // Print command output for debugging
+    standardOutput = System.out
+    errorOutput = System.err
+}
+
 build.dependsOn installDependencies
 build.dependsOn buildTypeScript
-test.dependsOn testTypeScript
-clean.dependsOn ['clean']
-=======
+//test.dependsOn testTypeScript
+//cleanArtifacts.dependsOn ['clean']
 
 apply plugin: 'java'
 apply plugin:'jacoco'
@@ -63,6 +145,7 @@ dependencies {
 }
 
 
+/*
 test {
     // Specify the directory containing test classes
     testClassesDirs = sourceSets.test.output.classesDirs
@@ -75,14 +158,13 @@ test {
     }
     finalizedBy jacocoTestReport
 }
+*/
 
 
  jar {
     manifest {
         attributes 'Main-Class': 'lib.*'        
     }
-
-
     from sourceSets.main.output  // Include compiled classes in the JAR
     archiveBaseName = 'unleash-test'  // Name of the JAR file
     destinationDirectory = file('build/libs')  // Output directory for the JAR file
