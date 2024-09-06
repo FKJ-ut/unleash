@@ -1,44 +1,12 @@
 
 plugins {
     id 'base'
-    id 'com.github.node-gradle.node' version '3.4.0'  // Ensure you have the Node plugin applied
-}
-
-node {
-    version = '18.17.1'  // Match this with your project's Node.js version
-    npmVersion = '8.15.0'
-    download = true
-}
-
-task installDependencies(type: NpmTask) {
-    description = 'Install Node.js dependencies'
-    group = 'build'
-    args = ['install']
-}
-
-task buildTypeScript(type: NpmTask) {
-    description = 'Build TypeScript files'
-    group = 'build'
-    args = ['run', 'build:backend']
-}
-
-task testTypeScript(type: NpmTask) {
-    description = 'Run TypeScript tests'
-    group = 'verification'
-    args = ['run', 'test']
-}
-
-task cleanArtifacts(type: NpmTask) {
-    description = 'Clean TypeScript build artifacts'
-    group = 'build'
-    args = ['run', 'clean']
 }
 
 task runDocker(type: Exec) {
     description = 'Run Docker File'
     commandLine 'docker', 'compose', 'up', '-d'
 }
-
 
 task runYarnInstall(type: Exec) {
     // Path to the Yarn executable in the project
@@ -82,6 +50,7 @@ task runDatabase(type: Exec) {
         'postgres'
 }
 
+
 task executeDatabase(type: Exec){
     description = 'Run the database'
     commandLine 'docker', 'start', 'postgres'
@@ -116,66 +85,3 @@ task runUnleash(type: Exec) {
     standardOutput = System.out
     errorOutput = System.err
 }
-
-build.dependsOn installDependencies
-build.dependsOn buildTypeScript
-//test.dependsOn testTypeScript
-//cleanArtifacts.dependsOn ['clean']
-
-apply plugin: 'java'
-apply plugin:'jacoco'
-jacoco {
-    toolVersion = "0.8.7"
-}
-java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
-}
-group = 'lib'
-version = 'V1'
-
-
-repositories {
-    mavenCentral()
-}
-
-
-dependencies {
-    testImplementation 'junit:junit:4.13.2'
-}
-
-
-/*
-test {
-    // Specify the directory containing test classes
-    testClassesDirs = sourceSets.test.output.classesDirs
-
-
-    // Optionally configure test options
-    testLogging {
-        // Configure which events to log during test execution
-        events 'passed', 'skipped', 'failed'
-    }
-    finalizedBy jacocoTestReport
-}
-*/
-
-
- jar {
-    manifest {
-        attributes 'Main-Class': 'lib.*'        
-    }
-    from sourceSets.main.output  // Include compiled classes in the JAR
-    archiveBaseName = 'unleash-test'  // Name of the JAR file
-    destinationDirectory = file('build/libs')  // Output directory for the JAR file
-}
-
-
-jacocoTestReport {
-    dependsOn test
-    reports {
-        xml.required = true
-        html.required = true
-    }
-}
-

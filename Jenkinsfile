@@ -21,7 +21,7 @@ stage('Verify Java Version') {
 
         stage('Verify Node.js Version') {
             steps {
-                bat "${env.NODE_BIN} --version"
+                bat "node --version"
             }
         }
 
