@@ -1,5 +1,10 @@
 pipeline { 
-    agent any 
+    agent any
+    environment {
+        JAVA_HOME = 'C:\Program Files\Java\jdk-21' // Ensure this points to the correct Java 17 installation
+        PATH = "${JAVA_HOME}/bin:${env.PATH}"
+    }
+
     stages { 
         stage('Checkout') { 
             steps { 
