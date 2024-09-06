@@ -10,7 +10,20 @@ pipeline {
             steps { 
                 git branch: 'main', url: 'https://github.com/Chua123Yun/unleash' 
             } 
-        } 
+        }
+        stage('Verify Gradle Version') {
+    steps {
+        powershell 'gradle -v'
+    }
+}
+
+stage('Verify Java Version') {
+    steps {
+        powershell 'java -version'
+    }
+}
+
+
         stage('Install Yarn') { 
             steps { 
                 powershell 'gradle runYarnInstall' 
